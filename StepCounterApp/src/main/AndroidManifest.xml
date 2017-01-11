@@ -15,6 +15,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <service android:name="com.greenland.stepcounter.service.StepCounterService" android:enabled="true">
+            <intent-filter>
+                <action android:name="app.manbo.Service"></action>
+            </intent-filter>
+        </service>
     </application>
 
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
