@@ -22,6 +22,7 @@ import java.net.URL;
 
 import static com.greenland.stepcounter.StepScreen.UIHANDLER_RESULT.UPDATE_ADREES;
 import static com.greenland.stepcounter.StepScreen.UIHANDLER_RESULT.UPDATE_DISTANCE;
+import static com.greenland.stepcounter.stepvalue.Values.Step;
 
 public class StepLocationManager {
     private static Context mContext = null;
@@ -126,7 +127,8 @@ public class StepLocationManager {
         JSONArray jArrObject = resultJObject.getJSONArray("items");
         for(int i=0; i < jArrObject.length(); i++){
             JSONObject itemJObject = jArrObject.getJSONObject(i);  // JSONObject 추출
-            Values.Address = itemJObject.getString("Address");
+            Values.Address = itemJObject.getString("address");
+
         }
         mHandler.sendEmptyMessage(UPDATE_ADREES);
     }
@@ -136,9 +138,7 @@ public class StepLocationManager {
         // Acquire a reference to the system Location Manager
         mLocationManager = (LocationManager) mContext.getSystemService(Context.LOCATION_SERVICE);
 
-        // GPS 프로바이더 사용가능여부
         Boolean isGPSEnabled = mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
-        // 네트워크 프로바이더 사용가능여부
         Boolean isNetworkEnabled = mLocationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
 
         Log.d("Main", "isGPSEnabled=" + isGPSEnabled);
@@ -154,15 +154,18 @@ public class StepLocationManager {
 //                Toast.makeText(mContext, lat + " " + lng, Toast.LENGTH_SHORT).show();
                 getLocation();
 
-                if(lastKnownLocation==null) {
-                    lastKnownLocation = location;
-                }
-                else {
-                    Values.Distance = lastKnownLocation.distanceTo(location);
-                    Log.i("Distance","HSH Distance:"+ Values.Distance);
-                    lastKnownLocation=location;
-                    mHandler.sendEmptyMessage(UPDATE_DISTANCE);
-                }
+//                Values.Distance = Values.Step * 75;
+//                mHandler.sendEmptyMessage(UPDATE_DISTANCE);
+
+//                if(lastKnownLocation==null) {
+//                    lastKnownLocation = location;
+//                }
+//                else {
+//                    Values.Distance = lastKnownLocation.distanceTo(location);
+//                    Log.i("Distance","HSH Distance:"+ Values.Distance);
+//                    lastKnownLocation=location;
+//                    mHandler.sendEmptyMessage(UPDATE_DISTANCE);
+//                }
             }
 
             public void onStatusChanged(String provider, int status, Bundle extras) {
@@ -226,24 +229,5 @@ public class StepLocationManager {
         }
 
     }
-
-    public void resultRequest(){
-        mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, mLocationListener);
-        mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, mLocationListener);
-
-        // 수동으로 위치 구하기
-        String locationProvider = LocationManager.GPS_PROVIDER;
-        Location lastKnownLocation = mLocationManager.getLastKnownLocation(locationProvider);
-        if (lastKnownLocation != null) {
-            double lng = lastKnownLocation.getLatitude();
-            double lat = lastKnownLocation.getLatitude();
-            myLat = lat;
-            myLng = lng;
-            Log.d("Main", "longtitude=" + lng + ", latitude=" + lat);
-        }
-
-        tempData = String.valueOf(myLat) + "," + String.valueOf(myLng);
-    }
-
 
 }

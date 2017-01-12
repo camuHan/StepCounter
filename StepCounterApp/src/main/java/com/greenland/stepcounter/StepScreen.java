@@ -28,19 +28,20 @@ import static com.greenland.stepcounter.StepScreen.UIHANDLER_RESULT.UPDATE_DISTA
 public class StepScreen extends Fragment implements OnClickListener {
 
     // Step Counter Start/Stop button
-    Button mBtnStopStepService;
+    Button                      mBtnStopStepService;
 
-    Intent mIntentStepService;
-    BroadcastReceiver mStepReceiver;
+    Intent                      mIntentStepService;
+    BroadcastReceiver           mStepReceiver;
 
-    StepLocationManager mMbLocMgr;
+    StepLocationManager         mMbLocMgr;
+    StepLogManager              mStepLogManager;
 
 //    Toast mToast;
-    TextView mTxtCount;
-    TextView mTxtAddress;
-    TextView mTxtDistance;
+    TextView                    mTxtCount;
+    TextView                    mTxtAddress;
+    TextView                    mTxtDistance;
 
-    boolean mStartFlag = true;
+    boolean                     mStartFlag = true;
 
     public class UIHANDLER_RESULT
     {
@@ -56,7 +57,7 @@ public class StepScreen extends Fragment implements OnClickListener {
                     mTxtAddress.setText(Values.Address);
                     break;
                 case UPDATE_DISTANCE:
-                    mTxtDistance.setText(String.valueOf(Values.Distance));
+                    mTxtDistance.setText(String.valueOf(Values.Distance + " M"));
                     break;
             }
         }
@@ -75,6 +76,7 @@ public class StepScreen extends Fragment implements OnClickListener {
 
         super.onActivityCreated(savedInstanceState);
 
+        mStepLogManager = StepLogManager.getInstance(getActivity());
         // Step Service Intent create
         mIntentStepService = new Intent(getActivity(),
                 com.greenland.stepcounter.service.StepCounterService.class);
@@ -97,8 +99,10 @@ public class StepScreen extends Fragment implements OnClickListener {
         public void onReceive(Context context, Intent intent) {
             String serviceData;
             serviceData = intent.getStringExtra("serviceData");
-            mTxtCount.setText(serviceData);
-            Toast.makeText(getActivity(), "Walking!", 1).show();
+            mTxtCount.setText(serviceData + " 걸음");
+            Values.Distance = Integer.valueOf(serviceData) * 75 /100;
+            mTxtDistance.setText(String.valueOf(Values.Distance) + " M");
+//            Toast.makeText(getActivity(), "Walking!", 1).show();
             TextView test = (TextView) getActivity().findViewById(R.id.walk_address);
         }
     }
@@ -117,20 +121,20 @@ public class StepScreen extends Fragment implements OnClickListener {
                     // start Step service
                     getActivity().registerReceiver(mStepReceiver, mainFilter);
                     getActivity().startService(mIntentStepService);
-                    Toast.makeText(getActivity(), "서비스 시작", 1).show();
+//                    Toast.makeText(getActivity(), "서비스 시작", 1).show();
                 } catch (Exception e) {
                     // TODO: handle exception
                     Toast.makeText(getActivity(), e.getMessage(), 1).show();
                 }
             } else {
-
                 mBtnStopStepService.setText("START");
                 try {
                     // stop Step service
                     getActivity().unregisterReceiver(mStepReceiver);
                     getActivity().stopService(mIntentStepService);
 
-                    Toast.makeText(getActivity(), "서비스 중지", 1).show();
+                    updateDB();
+//                    Toast.makeText(getActivity(), "서비스 중지", 1).show();
                 } catch (Exception e) {
                     // TODO: handle exception
                     Toast.makeText(getActivity(), e.getMessage(), 1).show();
@@ -140,26 +144,16 @@ public class StepScreen extends Fragment implements OnClickListener {
         }
     }
 
-//    // 최소 GPS 정보 업데이트 거리 10미터
-//    private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 10;
-//
-//    // 최소 GPS 정보 업데이트 시간 밀리세컨이므로 1분
-//    private static final long MIN_TIME_BW_UPDATES = 1000 * 60 * 1;
+    private void updateDB(){
+        mStepLogManager.setCalendar();
+		mStepLogManager.saveMessage(Values.Step, Values.Address, (int)Values.Distance);
+    }
+
 
     private boolean checkGPS() {
         LocationManager locationManager = (LocationManager) getActivity().getSystemService(LOCATION_SERVICE);
 //		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,1000,10,this);
         boolean gpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
-
-//        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-//                && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-//            return false;
-//        }
-//
-//        locationManager.requestLocationUpdates(
-//                LocationManager.GPS_PROVIDER,
-//                MIN_DISTANCE_CHANGE_FOR_UPDATES,
-//                MIN_TIME_BW_UPDATES, (LocationListener) getActivity());
 
 		if(!gpsEnabled){
             AlertDialog.Builder gpsDialog = new AlertDialog.Builder(getActivity());

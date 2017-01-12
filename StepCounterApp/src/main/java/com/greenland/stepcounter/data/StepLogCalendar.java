@@ -9,6 +9,7 @@ public class StepLogCalendar implements Serializable{
 	private static final long serialVersionUID = 1L;
 
 	private Calendar cal;
+	String mDbDate;
 	
 	public static final int PICK_DATE = 0;
 	public static final int PICK_TIME = 1;
@@ -16,6 +17,11 @@ public class StepLogCalendar implements Serializable{
 	public StepLogCalendar(long dbDate){
 		cal = Calendar.getInstance();
 		cal.setTimeInMillis(dbDate);
+	}
+
+	public StepLogCalendar(String dbDate){
+		cal = Calendar.getInstance();
+		mDbDate = dbDate;
 	}
 	
 	public StepLogCalendar(){
@@ -56,7 +62,7 @@ public class StepLogCalendar implements Serializable{
 	public void setHour(int hour){
 		cal.set(Calendar.HOUR_OF_DAY, hour);
 	}
-	
+
 	public int getMin(){
 		return cal.get(Calendar.MINUTE);
 	}
@@ -64,8 +70,21 @@ public class StepLogCalendar implements Serializable{
 		cal.set(Calendar.MINUTE, min);
 	}
 	
-	public long getDbDate(){
-		return cal.getTimeInMillis();
+//	public long getDbDate(){
+//		return cal.getTimeInMillis();
+//	}
+
+	public String getDbCompareDate(){
+		return mDbDate;
+	}
+
+	public String getDbDate(){
+		if(cal == null)
+			cal.getInstance();
+
+//		Date date = cal.getTime();
+		String strDate = String.valueOf(getYear()) + "/" + String.valueOf(getMonth()) + "/"+ String.valueOf(getDay());
+		return strDate;
 	}
 	
 }

@@ -12,9 +12,6 @@ import java.util.ArrayList;
 
 public final class StepLogManager {
 	
-	final static String mClsName = "RsvManager";
-	final static String mTag = "Life";
-	
 	private static StepLogManager mStepLogManager;
 	Context mCon;
 
@@ -66,13 +63,6 @@ public final class StepLogManager {
 		//setNowDate();
 	}
 	
-	void setMusicService(boolean check){
-		bMusicService = check;
-	}
-	boolean getMusicService(){
-		return bMusicService;
-	}
-	
 	void setDate(int year, int month, int day){
 		mCal.setYear(year);
 		mCal.setMonth(month);
@@ -83,13 +73,13 @@ public final class StepLogManager {
 		mCal.setMin(min);
 	}
 	
-	void saveMessage(String title, String msg, String pnum){
+	void saveMessage(int count, String msg, int distance){
 		StepLogMessage newLog = new StepLogMessage();
 
 		newLog.setCal(mCal);
-		newLog.setCount(title);
+		newLog.setCount(count);
 		newLog.setMsg(msg);
-		newLog.setDistance(pnum);
+		newLog.setDistance(distance);
 		
 		long result = mStorage.saveLog(newLog);
 		if(result == -1){	
@@ -99,9 +89,35 @@ public final class StepLogManager {
 			mStepLogList.add(newLog);
 		}
 	}
+	// ex) String fieldKey = "_id="+Integer.toString(id);
+	void updateMessage(int key, int count, String msg, int distance){
+		StepLogMessage newLog = new StepLogMessage();
+
+		newLog.setCal(mCal);
+		newLog.setCount(count);
+		newLog.setMsg(msg);
+		newLog.setDistance(distance);
+
+		String fieldKey = "_id=?";
+		String[] Key = new String[]{Integer.toString(key)};
+		// ex) String field = "_id=?";
+		// ex) String[] key = new String[]{Integer.toString(id)};
+		long result = mStorage.updateLog(newLog, fieldKey, Key);
+		if(result == -1){
+			Toast.makeText(mCon, "FAIL", Toast.LENGTH_SHORT).show();
+		}else{
+			mStepLogList.remove(key);
+			mStepLogList.add(key, newLog);
+//			mStepLogList.add(newLog);
+		}
+	}
 	
 	StepLogMessage loadMessage(int key){
 		return mStepLogList.get(key);
+	}
+
+	StepLogMessage loadMessage(String fieldKey){
+		return mStorage.loadLog(fieldKey);
 	}
 	
 	void removeMessage(int key){

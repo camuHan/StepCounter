@@ -25,9 +25,9 @@ public class LogStorageDBInfo {
 			+STEP_LOG_TBLNAME
 			+"("
 			+STEP_LOG_ID+" integer primary key autoincrement, "
-			+STEP_LOG_DISTANCE+" text, "
-			+STEP_LOG_DATE+" long, "			
-			+STEP_LOG_COUNT+" text, "
+			+STEP_LOG_DISTANCE+" integer, "
+			+STEP_LOG_DATE+" text, "
+			+STEP_LOG_COUNT+" integer, "
 			+STEP_LOG_MESSAGE+" text"
 			+");";
 }

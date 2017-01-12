@@ -11,9 +11,9 @@ public class StepLogMessage implements Serializable{
 	
 	private StepLogCalendar mRsvCal;
 	private long mLogId;
-	private String mCount;
+	private int mCount;
 	private String mMsg;
-	private String mDistance;
+	private int mDistance;
 	
 	public static enum eELEMENT_KEY{
 		LOG_LOGID,
@@ -38,7 +38,7 @@ public class StepLogMessage implements Serializable{
 		//LogManager.getInstance().log(LogManager.INFO, mLogTag, "Message Create", mClsName);
 	}
 	
-	public StepLogMessage(StepLogCalendar cal, String count, String msg, String distance){
+	public StepLogMessage(StepLogCalendar cal, int count, String msg, int distance){
 		mRsvCal = cal;
 		mCount = count;
 		mMsg = msg;
@@ -64,10 +64,10 @@ public class StepLogMessage implements Serializable{
 	/********************* MsgId *********************/
 	
 	/********************* Title *********************/
-	public void setCount(String count){
+	public void setCount(int count){
 		mCount = count;
 	}
-	public String getCount(){
+	public int getCount(){
 		return mCount;
 	}
 	/********************* Title *********************/
@@ -82,10 +82,10 @@ public class StepLogMessage implements Serializable{
 	/********************* Message *********************/
 	
 	/********************* PhoneNumber *********************/
-	public void setDistance(String pnum){
+	public void setDistance(int pnum){
 		mDistance = pnum;
 	}
-	public String getDistance(){
+	public int getDistance(){
 		return mDistance;
 	}
 	/********************* PhoneNumber *********************/

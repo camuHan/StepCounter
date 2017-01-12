@@ -12,7 +12,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -22,7 +21,7 @@ import android.widget.TextView;
 
 import com.greenland.stepcounter.data.StepLogMessage;
 
-public class StepLog extends ListFragment implements OnClickListener{
+public class StepLog extends ListFragment {
 	//HSHTEST
 	int num;
 
@@ -56,8 +55,8 @@ public class StepLog extends ListFragment implements OnClickListener{
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 							 Bundle savedInstanceState) {
 		View view = inflater.inflate(R.layout.log_list, null);
-		mBtnNewLog = (Button)view.findViewById(R.id.btnNewMsg);
-		mBtnNewLog.setOnClickListener(this);
+//		mBtnNewLog = (Button)view.findViewById(R.id.btnNewMsg);
+//		mBtnNewLog.setOnClickListener(this);
 
 		return view;
 	}
@@ -174,7 +173,7 @@ public class StepLog extends ListFragment implements OnClickListener{
 			}
 
 			StepLogMessage viewMsg = mStepLogManager.getMsgList().get(position);
-			// ��¥, �ð� ǥ��
+
 			holder.mTxtDate.setText(
 					viewMsg.getCal().getYear()
 							+ "/"
@@ -185,10 +184,8 @@ public class StepLog extends ListFragment implements OnClickListener{
 //						+ viewMsg.getCal().getHour()
 //						+ viewMsg.getCal().getMin()
 			);
-			// ���� ǥ��
+
 			holder.mTxtCount.setText("걸음수: " + viewMsg.getCount());
-			// ���� ǥ��
-//				LogManager.getInstance().log(LogManager.INFO, "HSHTEMP - getView() not null", mClsName);
 			holder.mTxtDistance.setText("거리 : " + viewMsg.getDistance());
 
 			return convertView;
@@ -209,11 +206,30 @@ public class StepLog extends ListFragment implements OnClickListener{
 		super.onDestroy();
 	}
 
-	@Override
-	public void onClick(View v) {
-		// TODO Auto-generated method stub
-		mStepLogManager.setCalendar();
-		mStepLogManager.saveMessage("11", "msg", "32.33");
-	}
+//	@Override
+//	public void onClick(View v) {
+//		// TODO Auto-generated method stub
+//
+////		mStepLogManager.setCalendar();
+////		String curDate = String.valueOf(Calendar.getInstance().get(Calendar.YEAR)) + "/" +
+////				String.valueOf(Calendar.getInstance().get(Calendar.MONTH)) + "/" +
+////				String.valueOf(Calendar.getInstance().get(Calendar.DAY_OF_MONTH));
+////		StepLogMessage temp = mStepLogManager.loadMessage("curDate");
+//////		temp.getLogId();
+////		if(temp != null){
+////			mStepLogManager.updateMessage((int)temp.getLogId(), 1,"han",1);
+////		}
+////		mStepLogManager.setCalendar();
+////		mStepLogManager.saveMessage(11, "msg", 177);
+////
+////		StepLogMessage viewMsg = mStepLogManager.getMsgList().get(0);
+//
+//
+////		int abc = viewMsg.getCal().getHour();
+////		int abc = viewMsg.getCal().getHour();
+//
+//
+////		mStepLogManager.updateMessage(1,"aa","bb","cc");
+//	}
 }
 

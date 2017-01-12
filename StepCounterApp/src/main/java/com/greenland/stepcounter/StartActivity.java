@@ -10,6 +10,8 @@ import android.support.annotation.RequiresApi;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTabHost;
 
+import com.greenland.stepcounter.service.MiniTopService;
+
 public class StartActivity extends FragmentActivity {
     private final String CLIENT_ID = "b40JMlbFg5RsPGEZWjWb";
 
@@ -24,10 +26,13 @@ public class StartActivity extends FragmentActivity {
         ETC
     }
 
-    private Runnable mGrantedRunnable;
-    private Runnable mDeniedRunnable;
+    private static int          OVERLAY_PERMISSION_REQ_CODE = 1234;
 
-    private static int OVERLAY_PERMISSION_REQ_CODE = 1234;
+    private Runnable            mGrantedRunnable;
+    private Runnable            mDeniedRunnable;
+    StepLogManager              mStepLogManager;
+
+
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +50,10 @@ public class StartActivity extends FragmentActivity {
         tabhost.addTab(tabhost.newTabSpec("1").setIndicator("만보기 기록"),
                 StepLog.class, null);
 
+        // initial load log list.
+//        mStepLogManager.getInstance(this);
+//        mStepLogManager.loadMsgList();
+
         if((Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)) {
             if (!Settings.canDrawOverlays(this)) {
                 Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
@@ -56,10 +65,10 @@ public class StartActivity extends FragmentActivity {
 
     public boolean checkPermission(String aPermission) {
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (checkSelfPermission(aPermission) == PackageManager.PERMISSION_GRANTED)
-                return true;
+            if (checkSelfPermission(aPermission) != PackageManager.PERMISSION_GRANTED)
+                return false;
         }
-        return false;
+        return true;
     }
 
     public void requestPermission(PERMISSION_TYPE type, String[] aPermission, Runnable aRunnableToExecuteOnPermissionGranted, Runnable aRunnableToExecuteOnPermissionDenied) {
@@ -105,18 +114,18 @@ public class StartActivity extends FragmentActivity {
         }
     }
 
-//    @Override
-//    protected void onResume() {
-//        // TODO Auto-generated method stub
-//        super.onResume();
-//        stopService(new Intent(this, MiniTopService.class));
-//    }
-//
-//    @Override
-//    protected void onUserLeaveHint() {
-//        // TODO Auto-generated method stub
-//        super.onUserLeaveHint();
-//        startService(new Intent(this, MiniTopService.class));
-//    }
+    @Override
+    protected void onResume() {
+        // TODO Auto-generated method stub
+        super.onResume();
+        stopService(new Intent(this, MiniTopService.class));
+    }
+
+    @Override
+    protected void onUserLeaveHint() {
+        // TODO Auto-generated method stub
+        super.onUserLeaveHint();
+        startService(new Intent(this, MiniTopService.class));
+    }
 }
 
