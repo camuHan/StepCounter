@@ -8,11 +8,11 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.IBinder;
 
-import com.greenland.stepcounter.stepvalue.StepCount;
+import com.greenland.stepcounter.stepvalue.Values;
 
-public class StepCounterService extends Service implements SensorEventListener {
+public class StepCounterService extends Service implements SensorEventListener{
 
-    int count = StepCount.Step;
+    int count = Values.Step;
 
     private long mLastTime;
     private float mSpeed;
@@ -82,9 +82,9 @@ public class StepCounterService extends Service implements SensorEventListener {
 
                     Intent myFilteredResponse = new Intent("com.greenland.stepcount.serv");
 
-                    StepCount.Step = count++;
+                    Values.Step = count++;
 
-                    String msg = StepCount.Step + "" ;
+                    String msg = Values.Step + "" ;
                     myFilteredResponse.putExtra("serviceData", msg);
 
                     sendBroadcast(myFilteredResponse);

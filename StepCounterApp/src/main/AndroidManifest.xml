@@ -17,7 +17,7 @@
         </activity>
         <service android:name="com.greenland.stepcounter.service.StepCounterService" android:enabled="true">
             <intent-filter>
-                <action android:name="app.manbo.Service"></action>
+                <action android:name="app.service.StepService"></action>
             </intent-filter>
         </service>
     </application>

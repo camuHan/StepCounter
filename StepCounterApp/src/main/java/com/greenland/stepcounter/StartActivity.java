@@ -1,13 +1,37 @@
 package com.greenland.stepcounter;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.provider.Settings;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTabHost;
 
-public class StartActivity extends FragmentActivity{
+import com.nhn.android.maps.NMapActivity;
+import com.nhn.android.maps.NMapLocationManager;
+import com.nhn.android.maps.NMapView;
+
+public class StartActivity extends FragmentActivity {
+    private final String CLIENT_ID = "b40JMlbFg5RsPGEZWjWb";
+
+    public interface PermissionEvent{
+        static final int LOCATION_PERMISSION_REQUEST 		        = 100;
+        static final int LOCATION_COARSE_PERMISSION_REQUEST 		= 200;
+    }
+
+    public enum PERMISSION_TYPE{
+        LOCATION_FINE,
+        LOCATION_COARSE,
+        ETC
+    }
+
+    private Runnable mGrantedRunnable;
+    private Runnable mDeniedRunnable;
+
     private static int OVERLAY_PERMISSION_REQ_CODE = 1234;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,6 +53,43 @@ public class StartActivity extends FragmentActivity{
             Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
                     Uri.parse("package:" + getPackageName()));
             startActivityForResult(intent, OVERLAY_PERMISSION_REQ_CODE);
+        }
+    }
+
+    public boolean checkPermission(String aPermission) {
+        if(checkSelfPermission(aPermission) == PackageManager.PERMISSION_GRANTED)
+            return true;
+
+        return false;
+    }
+
+    public void requestPermission(PERMISSION_TYPE type, String[] aPermission, Runnable aRunnableToExecuteOnPermissionGranted, Runnable aRunnableToExecuteOnPermissionDenied) {
+        mGrantedRunnable = aRunnableToExecuteOnPermissionGranted;
+        mDeniedRunnable = aRunnableToExecuteOnPermissionDenied;
+        if(type.equals(PERMISSION_TYPE.LOCATION_FINE)){
+            requestPermissions(aPermission, PermissionEvent.LOCATION_PERMISSION_REQUEST);
+        }else if(type.equals(PERMISSION_TYPE.LOCATION_COARSE)){
+            requestPermissions(aPermission, PermissionEvent.LOCATION_COARSE_PERMISSION_REQUEST);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        switch (requestCode) {
+            case PermissionEvent.LOCATION_PERMISSION_REQUEST:
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                    mGrantedRunnable.run();
+                }else{
+                    mDeniedRunnable.run();
+                }
+                break;
+            case PermissionEvent.LOCATION_COARSE_PERMISSION_REQUEST:
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                    mGrantedRunnable.run();
+                }else{
+                    mDeniedRunnable.run();
+                }
+                break;
         }
     }
 
@@ -55,3 +116,4 @@ public class StartActivity extends FragmentActivity{
 //        startService(new Intent(this, MiniTopService.class));
 //    }
 }
+
