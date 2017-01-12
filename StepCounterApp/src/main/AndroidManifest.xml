@@ -20,6 +20,8 @@
                 <action android:name="app.service.StepService"></action>
             </intent-filter>
         </service>
+        <provider android:name="com.greenland.stepcounter.provider.StepCounterProvider"
+            android:authorities="com.greenland.HSH.StepCounterProvider" />
     </application>
 
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />

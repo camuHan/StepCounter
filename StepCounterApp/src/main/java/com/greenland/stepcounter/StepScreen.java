@@ -22,6 +22,8 @@ import android.widget.Toast;
 import com.greenland.stepcounter.stepvalue.Values;
 
 import static android.content.Context.LOCATION_SERVICE;
+import static com.greenland.stepcounter.StepScreen.UIHANDLER_RESULT.UPDATE_ADREES;
+import static com.greenland.stepcounter.StepScreen.UIHANDLER_RESULT.UPDATE_DISTANCE;
 
 public class StepScreen extends Fragment implements OnClickListener {
 
@@ -33,22 +35,28 @@ public class StepScreen extends Fragment implements OnClickListener {
 
     StepLocationManager mMbLocMgr;
 
-    Toast mToast;
+//    Toast mToast;
     TextView mTxtCount;
     TextView mTxtAddress;
+    TextView mTxtDistance;
+
     boolean mStartFlag = true;
 
     public class UIHANDLER_RESULT
     {
-        static public final int UPDATEADREES		= 1;
+        static public final int UPDATE_ADREES       = 1;
+        static public final int UPDATE_DISTANCE		= 2;
     }
 
     Handler mUIHandler = new Handler(){
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {
-                case UIHANDLER_RESULT.UPDATEADREES:
-                    mTxtAddress.setText(Values.address);
+                case UPDATE_ADREES:
+                    mTxtAddress.setText(Values.Address);
+                    break;
+                case UPDATE_DISTANCE:
+                    mTxtDistance.setText(String.valueOf(Values.Distance));
                     break;
             }
         }
@@ -75,6 +83,7 @@ public class StepScreen extends Fragment implements OnClickListener {
 
         mTxtCount = (TextView) getActivity().findViewById(R.id.walk_count);
         mTxtAddress = (TextView) getActivity().findViewById(R.id.walk_address);
+        mTxtDistance = (TextView) getActivity().findViewById(R.id.walk_disance);
         mBtnStopStepService = (Button) getActivity().findViewById(R.id.btnStopService);
         mBtnStopStepService.setOnClickListener(this);
 

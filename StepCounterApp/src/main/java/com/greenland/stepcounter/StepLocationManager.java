@@ -7,7 +7,6 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Message;
 import android.util.Log;
 
 import com.greenland.stepcounter.stepvalue.Values;
@@ -21,8 +20,8 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-import static android.icu.lang.UCharacter.GraphemeClusterBreak.V;
-import static com.greenland.stepcounter.StepScreen.UIHANDLER_RESULT.UPDATEADREES;
+import static com.greenland.stepcounter.StepScreen.UIHANDLER_RESULT.UPDATE_ADREES;
+import static com.greenland.stepcounter.StepScreen.UIHANDLER_RESULT.UPDATE_DISTANCE;
 
 public class StepLocationManager {
     private static Context mContext = null;
@@ -34,6 +33,8 @@ public class StepLocationManager {
     double myLat;
     double myLng;
     String tempData;
+
+    Location lastKnownLocation = null;
 
     public static StepLocationManager getInstance(Context context) {
         mContext = context;
@@ -125,11 +126,9 @@ public class StepLocationManager {
         JSONArray jArrObject = resultJObject.getJSONArray("items");
         for(int i=0; i < jArrObject.length(); i++){
             JSONObject itemJObject = jArrObject.getJSONObject(i);  // JSONObject 추출
-            Values.address = itemJObject.getString("address");
+            Values.Address = itemJObject.getString("Address");
         }
-        Message msg = new Message();
-        msg.what = UPDATEADREES;
-        mHandler.sendMessage(msg);
+        mHandler.sendEmptyMessage(UPDATE_ADREES);
     }
 
 
@@ -154,6 +153,16 @@ public class StepLocationManager {
                 tempData = String.valueOf(lng) + "," + String.valueOf(lat);
 //                Toast.makeText(mContext, lat + " " + lng, Toast.LENGTH_SHORT).show();
                 getLocation();
+
+                if(lastKnownLocation==null) {
+                    lastKnownLocation = location;
+                }
+                else {
+                    Values.Distance = lastKnownLocation.distanceTo(location);
+                    Log.i("Distance","HSH Distance:"+ Values.Distance);
+                    lastKnownLocation=location;
+                    mHandler.sendEmptyMessage(UPDATE_DISTANCE);
+                }
             }
 
             public void onStatusChanged(String provider, int status, Bundle extras) {
@@ -203,7 +212,6 @@ public class StepLocationManager {
             mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, mLocationListener);
             mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, mLocationListener);
 
-            // 수동으로 위치 구하기
             String locationProvider = LocationManager.GPS_PROVIDER;
             Location lastKnownLocation = mLocationManager.getLastKnownLocation(locationProvider);
             if (lastKnownLocation != null) {
