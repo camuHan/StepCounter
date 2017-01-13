@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="horizontal"
-    android:background="#d2b48c" >
+    android:background="#88d2b48c" >
 
     <ImageView
         android:id="@+id/imgRsvMsg"

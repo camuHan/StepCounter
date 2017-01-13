@@ -11,6 +11,8 @@ import com.greenland.stepcounter.db.DBHandler;
 import java.util.ArrayList;
 import java.util.Calendar;
 
+import static com.greenland.stepcounter.storage.LogStorageDBInfo.STEP_LOG_TBLNAME;
+
 public class LogStorageDB extends LogStorage{
 	
 	final static String mClsName = "LogStorageDB";
@@ -27,7 +29,7 @@ public class LogStorageDB extends LogStorage{
 		ArrayList<StepLogMessage> rsvMsgList = new ArrayList<StepLogMessage>();
 		try {
 			mDbHandler = DBHandler.db_open(mCon);
-			String sql = "select * from " + LogStorageDBInfo.STEP_LOG_TBLNAME;
+			String sql = "select * from " + STEP_LOG_TBLNAME;
 			Cursor cur = mDbHandler.selectAll(sql);
 			
 			while(cur.moveToNext()){
@@ -86,6 +88,7 @@ public class LogStorageDB extends LogStorage{
 		values.put(LogStorageDBInfo.STEP_LOG_MESSAGE, newMsg.getMsg());
 		try {
 			mDbHandler = DBHandler.db_open(mCon);
+			String sql = "update " + STEP_LOG_TBLNAME + " set distance = " + newMsg.getDistance() + ", count = " + newMsg.getCount() + " where " + fieldKey + ";";
 			result = mDbHandler.update(values, fieldKey);
 		}catch (Exception e) {
 			System.out.println(e);
@@ -97,7 +100,6 @@ public class LogStorageDB extends LogStorage{
 		return result;
 	}
 
-    @Override
     public long updateLog(StepLogMessage newMsg, String fieldKey, String[] key) {
         // ex) String fieldKey = "_id="+Integer.toString(id);
         long result = -1;
@@ -131,7 +133,7 @@ public class LogStorageDB extends LogStorage{
 		ArrayList<StepLogMessage> rsvMsgList = new ArrayList<StepLogMessage>();
 		try {
 			mDbHandler = DBHandler.db_open(mCon);
-			String sql = "select * from " + LogStorageDBInfo.STEP_LOG_TBLNAME + " where " + fieldKey;
+			String sql = "select * from " + STEP_LOG_TBLNAME + " where " + fieldKey;
 			Cursor cur = mDbHandler.selectKey(sql);
 
 			if(cur.moveToNext() == true){

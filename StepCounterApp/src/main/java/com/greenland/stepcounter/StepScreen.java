@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.icu.util.Calendar;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
@@ -19,10 +20,12 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.greenland.stepcounter.data.StepLogMessage;
 import com.greenland.stepcounter.stepvalue.Values;
 
 import static android.content.Context.LOCATION_SERVICE;
 import static com.greenland.stepcounter.StepScreen.UIHANDLER_RESULT.UPDATE_ADREES;
+import static com.greenland.stepcounter.StepScreen.UIHANDLER_RESULT.UPDATE_ALL;
 import static com.greenland.stepcounter.StepScreen.UIHANDLER_RESULT.UPDATE_DISTANCE;
 
 public class StepScreen extends Fragment implements OnClickListener {
@@ -47,6 +50,7 @@ public class StepScreen extends Fragment implements OnClickListener {
     {
         static public final int UPDATE_ADREES       = 1;
         static public final int UPDATE_DISTANCE		= 2;
+        static public final int UPDATE_ALL		    = 3;
     }
 
     Handler mUIHandler = new Handler(){
@@ -59,6 +63,9 @@ public class StepScreen extends Fragment implements OnClickListener {
                 case UPDATE_DISTANCE:
                     mTxtDistance.setText(String.valueOf(Values.Distance + " M"));
                     break;
+                case UPDATE_ALL:
+                    mTxtCount.setText(String.valueOf(Values.Step) + " 걸음");
+                    mTxtDistance.setText(String.valueOf(Values.Distance + " M"));
             }
         }
     };
@@ -92,6 +99,8 @@ public class StepScreen extends Fragment implements OnClickListener {
         mMbLocMgr = StepLocationManager.getInstance(getActivity());
         mMbLocMgr.setHandler(mUIHandler);
         mMbLocMgr.getMyLocation();
+
+        reloadUI();
     }
 
     public class StepReceiver extends BroadcastReceiver {
@@ -146,7 +155,29 @@ public class StepScreen extends Fragment implements OnClickListener {
 
     private void updateDB(){
         mStepLogManager.setCalendar();
-		mStepLogManager.saveMessage(Values.Step, Values.Address, (int)Values.Distance);
+//		mStepLogManager.saveMessage(Values.Step, Values.Address, (int)Values.Distance);
+		String curDate = String.valueOf(Calendar.getInstance().get(Calendar.YEAR)) + "/" +
+				String.valueOf(Calendar.getInstance().get(Calendar.MONTH) + 1) + "/" +
+				String.valueOf(Calendar.getInstance().get(Calendar.DAY_OF_MONTH));
+		StepLogMessage loadLog = mStepLogManager.loadMessage(curDate);
+		if(loadLog != null){
+			mStepLogManager.updateMessage((int)loadLog.getLogId(), Values.Step,Values.Address, Values.Distance);
+		}else{
+            mStepLogManager.saveMessage(Values.Step, Values.Address, Values.Distance);
+        }
+    }
+
+    private void reloadUI(){
+        mStepLogManager.setCalendar();
+        String curDate = String.valueOf(Calendar.getInstance().get(Calendar.YEAR)) + "/" +
+                String.valueOf(Calendar.getInstance().get(Calendar.MONTH) + 1) + "/" +
+                String.valueOf(Calendar.getInstance().get(Calendar.DAY_OF_MONTH));
+        StepLogMessage loadLog = mStepLogManager.loadMessage(curDate);
+        if(loadLog != null) {
+            Values.Distance = loadLog.getDistance();
+            Values.Step = loadLog.getCount();
+        }
+        mUIHandler.sendEmptyMessage(UPDATE_ALL);
     }
 
 

@@ -98,16 +98,16 @@ public final class StepLogManager {
 		newLog.setMsg(msg);
 		newLog.setDistance(distance);
 
-		String fieldKey = "_id=?";
-		String[] Key = new String[]{Integer.toString(key)};
+		String fieldKey = "_id=" + key;
+//		String[] Key = new String[]{Integer.toString(key)};
 		// ex) String field = "_id=?";
 		// ex) String[] key = new String[]{Integer.toString(id)};
-		long result = mStorage.updateLog(newLog, fieldKey, Key);
+		long result = mStorage.updateLog(newLog, fieldKey);
 		if(result == -1){
 			Toast.makeText(mCon, "FAIL", Toast.LENGTH_SHORT).show();
 		}else{
-			mStepLogList.remove(key);
-			mStepLogList.add(key, newLog);
+			mStepLogList.remove(key-1);
+			mStepLogList.add(key-1, newLog);
 //			mStepLogList.add(newLog);
 		}
 	}

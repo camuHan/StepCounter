@@ -3,6 +3,7 @@
     android:orientation="vertical"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
+    android:background="@drawable/writeback"
     android:weightSum="1">
 
     <LinearLayout
@@ -17,6 +18,7 @@
             android:id="@+id/walk_image"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
             android:layout_marginLeft="30dip"
             android:src="@drawable/mainicon" >
         </ImageView>
@@ -25,7 +27,8 @@
             android:text="0"
             android:textSize="30.00sp"
             android:id="@+id/walk_count"
-            android:layout_marginLeft="50dip"
+            android:layout_marginLeft="70dip"
+            android:layout_marginTop="10dp"
             android:gravity="end"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
@@ -41,6 +44,7 @@
         android:gravity="bottom"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
         android:layout_weight="0.29">
     </TextView>
 
@@ -52,19 +56,20 @@
         android:gravity="bottom|center_horizontal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
         android:layout_weight="0.29">
     </TextView>
 
-	<Button
-        android:text="Button"
-        android:textSize="30.00sp"
-        android:id="@+id/btnStopService"
-        android:background="@android:color/holo_red_dark"
-        android:textColor="@android:color/white"
-        android:layout_gravity="bottom|center_horizontal"
-        android:layout_marginTop="200dp"
-        android:layout_width="251dp"
-        android:layout_height="wrap_content">
-    </Button>
+    <Button
+    android:text="START"
+    android:textSize="30.00sp"
+    android:id="@+id/btnStopService"
+    android:background="@android:color/holo_red_dark"
+    android:textColor="@android:color/white"
+    android:layout_gravity="bottom|center_horizontal"
+    android:layout_marginTop="200dp"
+    android:layout_width="251dp"
+    android:layout_height="wrap_content">
+</Button>
 
 </LinearLayout>

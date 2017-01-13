@@ -51,6 +51,11 @@ public class DBHandler {
 		long result = mDb.update(mDbHelper.mDbTableName, values, field, key);
 		return result;
 	}
+
+	public void update(String sql){
+		mDb.execSQL(sql);
+	}
+
 	/*
 	public void delete(String sql){
 		// ex) String sql = "delete from tblName where _id="+id";

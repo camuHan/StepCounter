@@ -78,17 +78,17 @@ public class StepLog extends ListFragment {
 	@Override
 	public void onListItemClick(ListView l, View v, int position, long id) {
 		super.onListItemClick(l, v, position, id);
-		clickItemId = position;
-		new AlertDialog.Builder(getActivity()).setTitle("삭제").setMessage("삭제할랭?")
-				.setPositiveButton("엉", new DialogInterface.OnClickListener() {
-
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-//					Bundle data = new Bundle();
-//					data.putInt(ShareDataKeyString.FRAG_MSGID, clickItemId);
-//					moveTabFocus(FragTagString.FRAG_ROOT_WRITE, data);
-					}
-				}).setNegativeButton("아닝", null).show();
+//		clickItemId = position;
+//		new AlertDialog.Builder(getActivity()).setTitle("삭제").setMessage("삭제할랭?")
+//				.setPositiveButton("엉", new DialogInterface.OnClickListener() {
+//
+//					@Override
+//					public void onClick(DialogInterface dialog, int which) {
+////					Bundle data = new Bundle();
+////					data.putInt(ShareDataKeyString.FRAG_MSGID, clickItemId);
+////					moveTabFocus(FragTagString.FRAG_ROOT_WRITE, data);
+//					}
+//				}).setNegativeButton("아닝", null).show();
 
 	}
 
